@@ -1,6 +1,7 @@
 const express = require('express')
-const path = require('path')
-const bcrypt = require('bcrypt')
+const path = require("path")
+const bcrypt = require("bcrypt")
+const collection = require("./config")
 
 const app = express()
 const port = 8080
