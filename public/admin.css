@@ -1,0 +1,130 @@
+body{
+    font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+	    background: url('./resources/admin.jpg') center/cover no-repeat;
+    }
+    .filetable{
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .filetabletd{
+      border: 1px solid black;
+      border-radius: 10px;
+      height: 30px;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .container {
+      width: 500px; 
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      display: block;
+    }
+    .dashboard_container {
+      width: 80%; 
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 40px;
+      border-radius: 28px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+   
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color:white;
+      color:black;
+      border: line;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color:chartreuse;
+      border:none;
+      color:white;
+    }
+    .sub_button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color:white;
+      color:black;
+      border: line;
+      border-radius: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 120%;
+      height: 45px;
+    }
+
+    .sub_button:hover {
+      background-color:black;
+      border:none;
+      color:white;
+    }
+    
+    .error{
+      color: white;
+      background-color: red;
+      font-size: large;
+      font-weight: bolder;
+    }
+    .subject{
+      height: 50px;
+      width: 200px;
+      cursor: pointer;
+     
+    }
+    .logout{
+      margin-left: 80%;
+      background-color:black;
+      height: 30px;
+      text-align: center;
+      width: 80px;
+      padding-top: 10px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .logout:hover{
+      background-color:dimgray;
+    }
+    .logout_text{
+      color:white;
+    }
+    .meterial_text{
+      color:blue;
+    }
