@@ -7,7 +7,7 @@ body{
       justify-content: center;
       align-items: center;
       height: 100vh;
-	    background: url('/home.jpg') center/cover no-repeat;
+	    background: url('./resources/home.jpg') center/cover no-repeat;
     }
     .container {
         width: 500px; 
