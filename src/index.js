@@ -25,6 +25,10 @@ app.get("/admin",(req,res) => {
     res.render("admin");
 })
 
+app.get("/home",(req,res) => {
+    res.render("home");
+})
+
 app.listen(port,() =>{
     console.log('server run on port ',port);
 })
