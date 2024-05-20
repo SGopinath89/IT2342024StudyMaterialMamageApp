@@ -1,0 +1,57 @@
+body{
+    font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+	    background: url('/home.jpg') center/cover no-repeat;
+    }
+    .container {
+        width: 500px; 
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+  
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color:white;
+      color:black;
+      border: line;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color:#3498db;
+      border:none;
+      color:white;
+    }
+    
+    
+    .admin_button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color:white;
+      color:black;
+      border: line;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .admin_button:hover {
+      background-color:chartreuse;
+      border:none;
+      color:white;
+    }
+   
+    
