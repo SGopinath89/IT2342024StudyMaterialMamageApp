@@ -22,7 +22,7 @@ const LoginScema = new mongoose.Schema({
 
 
 
-const collection = new mongoose.model("users",LoginScema)
+const collection = new mongoose.model("admins",LoginScema)
 
 
 
