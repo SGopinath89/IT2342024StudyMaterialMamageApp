@@ -1,29 +1,43 @@
-const mongoose = require('mongoose')
-const connect = mongoose.connect("mongodb://0.0.0.0/Smms");
+const mongoose = require('mongoose');
+
+// Add options to handle deprecation warnings
+const connect = mongoose.connect("mongodb://0.0.0.0/Smms", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 
 connect.then(() => {
-    console.log("database connected successfully");
-})
-.catch(() => {
-    console.log("Database cannot connect");
-})
+    console.log("Database connected successfully");
+}).catch((error) => {
+    console.log("Database cannot connect", error);
+});
 
-const LoginScema = new mongoose.Schema({
+const LoginSchema = new mongoose.Schema({
     name: {
-        type:String,
-        require:true
+        type: String,
+        required: true
     },
     password: {
-        type:String,
-        require:true
+        type: String,
+        required: true
     }
-})
+});
 
+const AdminLoginSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    }
+});
 
+const UserCollection = mongoose.model("users", LoginSchema);
+const AdminCollection = mongoose.model("admins", AdminLoginSchema);
 
-
-const collection = new mongoose.model("users",LoginScema)
-
-
-
-module.exports = collection
+module.exports = {
+    UserCollection,
+    AdminCollection
+};

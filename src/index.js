@@ -1,115 +1,93 @@
-const express = require('express')
-const path = require("path")
-const bcrypt = require("bcrypt")
-const collection = require("./config")
-const collection2 = require("./config2")
+const express = require('express');
+const path = require("path");
+const bcrypt = require("bcrypt");
+const { UserCollection, AdminCollection } = require("./config");
 
+const app = express();
+const port = 8080;
 
+app.use(express.json());
+app.set('view engine', 'ejs');
+app.use(express.static("./public"));
+app.use(express.urlencoded({ extended: false }));
 
-
-const app = express()
-const port = 8080
-
-app.use(express.json())
-app.set('view engine','ejs')
-app.use(express.static("./public"))
-app.use(express.urlencoded({extended: false}))
-
-
-
-app.get("/",(req,res) => {
+app.get("/", (req, res) => {
     res.render("home");
-})
+});
 
-
-
-app.get("/login",(req,res) => {
+app.get("/login", (req, res) => {
     res.render("login");
-})
+});
 
-
-
-app.get("/signup",(req,res) => {
+app.get("/signup", (req, res) => {
     res.render("signup");
-})
+});
 
-
-
-app.get("/admin",(req,res) => {
+app.get("/admin", (req, res) => {
     res.render("admin");
-})
+});
 
-
-
-app.get("/home",(req,res) => {
+app.get("/home", (req, res) => {
     res.render("home");
-})
+});
 
-
-
-app.post("/login", async (req,res) => {
-   try{
-        const check =await collection.findOne({name: req.body.username});
-        if(!check){
-            res.send("user name cannot find");
+app.post("/login", async (req, res) => {
+    try {
+        const user = await UserCollection.findOne({ name: req.body.username });
+        if (!user) {
+            return res.send("User name not found");
         }
 
-        const isPasswordMatch = await bcrypt.compare(req.body.password,check.password);
-        if(isPasswordMatch){
+        const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
+        if (isPasswordMatch) {
             res.render("home");
+        } else {
+            res.send("Wrong password");
         }
-        else{
-            res.send("wrong password");
+    } catch (error) {
+        res.send("Error occurred during login");
+    }
+});
+
+app.post("/signup", async (req, res) => {
+    try {
+        const existingUser = await UserCollection.findOne({ name: req.body.username });
+        if (existingUser) {
+            return res.send("User already exists");
         }
-   }
-   catch{
-    res.send("wrong detail");
-   }
 
-})
+        // Hash password using bcrypt
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
 
+        // Create new user with hashed password
+        const newUser = new UserCollection({ name: req.body.username, password: hashedPassword });
+        await newUser.save();
 
-
-app.post("/signup", async (req,res) => {
-    const data = {
-       name: req.body.username,
-       password: req.body.password
+        res.send("User registered successfully");
+    } catch (error) {
+        res.send("Error occurred during signup");
     }
-    const existinguser = await collection2.findOne({name: data.name});
-    if(existinguser){
-        res.send("user alredy exist");
-    }
-    else{
-        //hash password using bcrypt
-        const saltRounds = 10;// no of salt round for bcrypt
-        const hashedPassword = await bcrypt.hash(data.password, saltRounds);
-        data.password = hashedPassword;
-        const userdata = await collection2.insertMany(data);
-        console.log(userdata);
-    }
-})
+});
 
-app.post("/admin", async (req,res) => {
-    try{
-         const check =await collection2.findOne({name: req.body.username});
-         if(!check){
-             res.send("user name cannot find");
-         }
- 
-         const isPasswordMatch = await bcrypt.compare(req.body.password,check.password);
-         if(isPasswordMatch){
-             res.render("home");
-         }
-         else{
-             res.send("wrong password");
-         }
-    }
-    catch{
-     res.send("wrong detail");
-    }
- 
- })
+app.post("/admin", async (req, res) => {
+    try {
+        const admin = await AdminCollection.findOne({ name: req.body.username });
+        if (!admin) {
+            return res.send("Admin user name not found");
+        }
 
-app.listen(port,() =>{
-    console.log('server run on port ',port);
-})
+        const isPasswordMatch = await bcrypt.compare(req.body.password, admin.password);
+        if (isPasswordMatch) {
+            res.render("home");
+        } else {
+            res.send("Wrong password");
+        }
+    } catch (error) {
+        res.send("Error occurred during admin login");
+    }
+});
+
+app.listen(port, () => {
+    console.log('Server running on port', port);
+});
