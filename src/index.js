@@ -31,6 +31,10 @@ app.get("/home", (req, res) => {
     res.render("home");
 });
 
+app.get("/passwordChange", (req, res) => {
+    res.render("passwordChange");
+});
+
 app.post("/login", async (req, res) => {
     try {
         const user = await UserCollection.findOne({ name: req.body.username });
@@ -51,17 +55,36 @@ app.post("/login", async (req, res) => {
 
 app.post("/signup", async (req, res) => {
     try {
-        const existingUser = await UserCollection.findOne({ name: req.body.username });
+        const confirmPassword=req.body.confirmPassword;
+        const password = req.body.password;
+        const username = req.body.username;
+
+        const existingUser = await UserCollection.findOne({ name: username });
         if (existingUser) {
-            return res.send("User already exists");
+            return res.render("signup", { error: "User already exists" });
         }
+       
+        // Validation checks
+        if (username.length < 3) {
+            return res.send("Username must be at least 3 characters long");
+        }
+
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,12})/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).send("Password must be 8 to 12 characters long, include at least one uppercase letter, and one special character");
+        }
+
+        if (password !== confirmPassword) {
+            return res.send("Passwords do not match");
+        }
+
 
         // Hash password using bcrypt
         const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Create new user with hashed password
-        const newUser = new UserCollection({ name: req.body.username, password: hashedPassword });
+        const newUser = new UserCollection({ name: username, password: hashedPassword });
         await newUser.save();
 
         res.send("User registered successfully");
