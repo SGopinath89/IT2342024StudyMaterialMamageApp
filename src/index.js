@@ -30,6 +30,13 @@ app.get("/admin", (req, res) => {
 app.get("/home", (req, res) => {
     res.render("home");
 });
+app.get("/user_dashboard", (req, res) => {
+    res.render("user_dasboard");
+});
+
+app.get("/admin_dashboard", (req, res) => {
+    res.render("admin_dasboard");
+});
 
 app.get("/passwordChange", (req, res) => {
     res.render("passwordChange", { error: "" });
@@ -44,7 +51,7 @@ app.post("/login", async (req, res) => {
 
         const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
         if (isPasswordMatch) {
-            res.render("home");
+            res.render("user_dashboard");
         } else {
             res.status(400).render("login", { error: "Wrong password" });
         }
@@ -135,7 +142,7 @@ app.post("/admin", async (req, res) => {
 
         const isPasswordMatch = await bcrypt.compare(req.body.password, admin.password);
         if (isPasswordMatch) {
-            res.render("home");
+            res.render("admin_dashboard");
         } else {
             res.status(400).render("admin", { error: "Wrong password" });
         }
