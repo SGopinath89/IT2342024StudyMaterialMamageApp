@@ -34,10 +34,19 @@ const AdminLoginSchema = new mongoose.Schema({
     }
 });
 
+const FileUploadSchema = new mongoose.Schema({
+    subject: { type: String, required: true },
+    fileName: { type: String, required: true },
+    filePath: { type: String, required: true },
+    fileType: { type: String, required: true }
+});
+
 const UserCollection = mongoose.model("users", LoginSchema);
 const AdminCollection = mongoose.model("admins", AdminLoginSchema);
+const FileCollection = mongoose.model("files", FileUploadSchema);
 
 module.exports = {
     UserCollection,
-    AdminCollection
+    AdminCollection,
+    FileCollection
 };

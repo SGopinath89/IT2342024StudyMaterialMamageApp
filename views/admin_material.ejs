@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Material</title>
+    <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logout">
+            <a class="logout_text" href="/admin_dashboard">Back</a>
+        </div>
+        <br><br>
+        <h1><%= subject %></h1><br>
+        <% if (error) { %>
+            <p class="error"><%= error %></p>
+        <% } %>
+        <% if (message) { %>
+            <p class="message"><%= message %></p>
+        <% } %>
+        <form action="/admin_material" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="subject" value="<%= subject %>">
+            <label for="file">Select File:</label>
+            <input type="file" name="file" id="file" required>
+            <button type="submit" name="submit">Upload</button>
+        </form>
+        <h1>FILES</h1>
+        <!-- Display uploaded files if needed -->
+    </div>
+</body>
+</html>

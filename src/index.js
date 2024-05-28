@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require("path");
 const bcrypt = require("bcrypt");
-const { UserCollection, AdminCollection } = require("./config");
+const multer = require('multer');
+const { UserCollection, AdminCollection, FileCollection } = require("./config");
 
 const app = express();
 const port = 8080;
@@ -11,12 +12,38 @@ app.set('view engine', 'ejs');
 app.use(express.static("./public"));
 app.use(express.urlencoded({ extended: false }));
 
+app.listen(port, () => {
+    console.log('Server running on port', port);
+});
+
+
+
+//File upload
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+const upload = multer({ storage: storage });
+
+
+
+//Home get 
+
 app.get("/", (req, res) => {
     res.render("home");
 });
+
+app.get("/home", (req, res) => {
+    res.render("home");
+});
+
 app.get("/login", (req, res) => {
-    // Pass an empty error string for now
-    res.render("login", { error: "" });
+     res.render("login", { error: "" });
 });
 
 app.get("/signup", (req, res) => {
@@ -27,20 +54,36 @@ app.get("/admin", (req, res) => {
     res.render("admin", { error: "" });
 });
 
-app.get("/home", (req, res) => {
-    res.render("home");
-});
-app.get("/user_dashboard", (req, res) => {
-    res.render("user_dasboard");
-});
 
-app.get("/admin_dashboard", (req, res) => {
-    res.render("admin_dasboard");
-});
+//User get
 
 app.get("/passwordChange", (req, res) => {
     res.render("passwordChange", { error: "" });
 });
+
+app.get("/user_dashboard", (req, res) => {
+    res.render("user_dashboard");
+});
+
+app.get("/user_material", (req, res) => {
+    res.render("user_material");
+});
+
+
+//Admin get
+
+app.get("/admin_material", (req, res) => {
+    const subject = req.body.subject; // Assuming you're passing the subject from somewhere
+    res.render("admin_material", { subject, message: "", error: "" });
+});
+
+
+app.get("/admin_dashboard", (req, res) => {
+    res.render("admin_dashboard");
+});
+
+
+//Home post
 
 app.post("/login", async (req, res) => {
     try {
@@ -51,7 +94,7 @@ app.post("/login", async (req, res) => {
 
         const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
         if (isPasswordMatch) {
-            res.render("user_dashboard");
+            res.redirect("user_dashboard");
         } else {
             res.status(400).render("login", { error: "Wrong password" });
         }
@@ -132,7 +175,6 @@ app.post("/passwordChange", async (req, res) => {
     }
 });
 
-
 app.post("/admin", async (req, res) => {
     try {
         const admin = await AdminCollection.findOne({ name: req.body.username });
@@ -142,7 +184,7 @@ app.post("/admin", async (req, res) => {
 
         const isPasswordMatch = await bcrypt.compare(req.body.password, admin.password);
         if (isPasswordMatch) {
-            res.render("admin_dashboard");
+            res.redirect("admin_dashboard");
         } else {
             res.status(400).render("admin", { error: "Wrong password" });
         }
@@ -151,6 +193,43 @@ app.post("/admin", async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log('Server running on port', port);
+
+//Admin post
+
+app.post("/admin_material", upload.single('file'), async (req, res) => {
+    try {
+        const subject = req.body.subject;
+        const file = req.file;
+
+        if (!file) {
+            return res.status(400).render("admin_material", { subject, error: "No file uploaded" });
+        }
+
+        const newFile = new FileCollection({
+            subject: subject,
+            fileName: file.filename,
+            filePath: file.path,
+            fileType: file.mimetype
+        });
+
+        await newFile.save();
+
+        res.render("admin_material", { subject, message: "File uploaded successfully" });
+    } catch (error) {
+        res.status(500).render("admin_material", { subject, error: "Error occurred during file upload" });
+    }
 });
+
+
+//User post
+
+app.post("/user_material", (req, res) => {
+    // Retrieve the selected subject value from the request body
+    const selectedSubject = req.body.selectedSubject.toString().replace(',', '');
+    
+    // Render the admin_material view and pass the selected subject value
+    res.render("user_material", { subject: selectedSubject });
+});
+
+ 
+
