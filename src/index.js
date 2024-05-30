@@ -2,7 +2,9 @@ const express = require('express');
 const path = require("path");
 const bcrypt = require("bcrypt");
 const multer = require('multer');
+const methodOverride = require('method-override');
 const { UserCollection, AdminCollection, FileCollection } = require("./config");
+const { name } = require('ejs');
 
 const app = express();
 const port = 8080;
@@ -10,7 +12,9 @@ const port = 8080;
 app.use(express.json());
 app.set('view engine', 'ejs');
 app.use(express.static("./public"));
+app.use(express.static("./views"));
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride('_method'));
 
 app.listen(port, () => {
     console.log('Server running on port', port);
@@ -18,17 +22,7 @@ app.listen(port, () => {
 
 
 
-//File upload
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './uploads');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
-const upload = multer({ storage: storage });
 
 
 
@@ -73,13 +67,23 @@ app.get("/user_material", (req, res) => {
 //Admin get
 
 app.get("/admin_material", (req, res) => {
-    const subject = req.body.subject; // Assuming you're passing the subject from somewhere
-    res.render("admin_material", { subject, message: "", error: "" });
+    const subject = "TEST";
+    
+    FileCollection.find({})
+    .then((x) =>{
+        res.render("admin_material",{subject, x});
+    })
+    .catch((y)=>{
+        console.log(y)
+    })
 });
 
 
 app.get("/admin_dashboard", (req, res) => {
-    res.render("admin_dashboard");
+
+        res.render("admin_dashboard");
+ 
+   
 });
 
 
@@ -196,29 +200,7 @@ app.post("/admin", async (req, res) => {
 
 //Admin post
 
-app.post("/admin_material", upload.single('file'), async (req, res) => {
-    try {
-        const subject = req.body.subject;
-        const file = req.file;
 
-        if (!file) {
-            return res.status(400).render("admin_material", { subject, error: "No file uploaded" });
-        }
-
-        const newFile = new FileCollection({
-            subject: subject,
-            fileName: file.filename,
-            filePath: file.path,
-            fileType: file.mimetype
-        });
-
-        await newFile.save();
-
-        res.render("admin_material", { subject, message: "File uploaded successfully" });
-    } catch (error) {
-        res.status(500).render("admin_material", { subject, error: "Error occurred during file upload" });
-    }
-});
 
 
 //User post
@@ -229,7 +211,65 @@ app.post("/user_material", (req, res) => {
     
     // Render the admin_material view and pass the selected subject value
     res.render("user_material", { subject: selectedSubject });
+    
 });
 
+
+
+let Storage= multer.diskStorage({
+    destination : 'uploads/',
+    filename : (req, file, cb) =>{
+        cb(null, file.originalname)
+    }
+})
  
+
+let upload = multer({
+    storage : Storage
+})
+
+
+
+
+app.post("/admin_material", (req, res) => {
+    // Retrieve the selected subject value from the request body
+   
+    res.redirect("admin_material");
+
+});
+
+app.post("/upload",upload.single('file'),(req, res) => {
+    req.file
+    FileCollection.findOne({name:req.file.filename})
+    .then((a)=>{
+        if(a){
+        console.log("file alredy exicist");
+    }
+    else{
+        const newfile = new FileCollection({
+            name : req.file.filename
+       })
+       newfile.save();
+        res.redirect("admin_material");
+       
+    }
+    })
+
+app.delete("/delete/:id", async (req, res) => {
+    try {
+        const result = await FileCollection.deleteOne({ name: req.params.id });
+        if (result.deletedCount === 0) {
+            return res.status(404).send("File not found");
+        }
+        res.status(200).send("File deleted successfully");
+    } catch (error) {
+        res.status(500).send("Error occurred during file deletion");
+    }
+});
+   
+   
+   
+
+
+})
 
