@@ -16,6 +16,27 @@
     <h1><%= subject %></h1><br>
 		
 		<h1>FILES</h1>
+
+        <table class='filetable'>
+            <%x.forEach((y)=>{%>
+                 <tr>
+                 <td class='filetabletd'>
+                     <%=y.name%>
+                 </td>
+                 <td class='filetabletd'>
+                 <a class='meterial_text' href='./uploads/<%=y.name%>' target=_blank> Open File </a>
+                 </td>
+                 <td class='filetabletd'>
+                 <a class='meterial_text' href='' download> Download File </a>
+                 </td>
+                 <td class='filetabletd'>
+                     <form action="/delete/<%=y.name%>?_method=DELETE" method="post">
+                         <button type="submit" name="submit">delete</button>
+                     </form>
+                 </td>
+                 </tr>
+             <%})%>
+         </table>
 		
 		
     </div>

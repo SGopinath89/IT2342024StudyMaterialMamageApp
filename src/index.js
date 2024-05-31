@@ -2,6 +2,7 @@ const express = require('express');
 const path = require("path");
 const bcrypt = require("bcrypt");
 const multer = require('multer');
+const fs = require('fs');
 const methodOverride = require('method-override');
 const { UserCollection, AdminCollection, FileCollection } = require("./config");
 const { name } = require('ejs');
@@ -22,6 +23,18 @@ app.listen(port, () => {
 
 
 
+//file uploading part
+let Storage= multer.diskStorage({
+    destination : 'uploads/',
+    filename : (req, file, cb) =>{
+        cb(null, file.originalname)
+    }
+})
+ 
+
+let upload = multer({
+    storage : Storage
+})
 
 
 
@@ -60,7 +73,13 @@ app.get("/user_dashboard", (req, res) => {
 });
 
 app.get("/user_material", (req, res) => {
-    res.render("user_material");
+    FileCollection.find({})
+    .then((x) =>{
+        res.render("user_material",{subject, x});
+    })
+    .catch((y)=>{
+        console.log(y)
+    })
 });
 
 
@@ -198,9 +217,6 @@ app.post("/admin", async (req, res) => {
 });
 
 
-//Admin post
-
-
 
 
 //User post
@@ -210,25 +226,21 @@ app.post("/user_material", (req, res) => {
     const selectedSubject = req.body.selectedSubject.toString().replace(',', '');
     
     // Render the admin_material view and pass the selected subject value
-    res.render("user_material", { subject: selectedSubject });
+    
+    FileCollection.find({})
+    .then((x) =>{
+        res.render("user_material",{subject:selectedSubject, x});
+    })
+    .catch((y)=>{
+        console.log(y)
+    })
+    
     
 });
 
 
 
-let Storage= multer.diskStorage({
-    destination : 'uploads/',
-    filename : (req, file, cb) =>{
-        cb(null, file.originalname)
-    }
-})
- 
-
-let upload = multer({
-    storage : Storage
-})
-
-
+//Admin post
 
 
 app.post("/admin_material", (req, res) => {
@@ -254,22 +266,33 @@ app.post("/upload",upload.single('file'),(req, res) => {
        
     }
     })
+});
+
 
 app.delete("/delete/:id", async (req, res) => {
     try {
-        const result = await FileCollection.deleteOne({ name: req.params.id });
-        if (result.deletedCount === 0) {
+        const fileName = req.params.id;
+        const document = await FileCollection.deleteOne({ name: fileName });
+        if (document.deletedCount === 0) {
             return res.status(404).send("File not found");
         }
-        res.status(200).send("File deleted successfully");
-    } catch (error) {
+        
+        const filepath = 'uploads/' + fileName;
+        fs.unlinkSync(filepath);
+        res.redirect('/admin_material');
+
+      
+} catch (error) {
         res.status(500).send("Error occurred during file deletion");
     }
 });
-   
-   
-   
 
-
+app.post("/open_file/:id", async(req,res) => {
+    const fileName = req.params.id;
+    const filepath = 'uploads/' + fileName;
+    fs.open(filepath);
 })
+   
+   
+   
 

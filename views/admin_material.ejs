@@ -27,7 +27,9 @@
 				    <%=y.name%>
 				</td>
                 <td class='filetabletd'>
-                <a class='meterial_text' href='./uploads/<%=y.name%>' target=_blank> Open File </a>
+                    <form action="/open_file/<%=y.name%>" method="post">
+                        <button type="submit" name="submit">Open</button>
+                    </form>
                 </td>
                 <td class='filetabletd'>
                 <a class='meterial_text' href='' download> Download File </a>
