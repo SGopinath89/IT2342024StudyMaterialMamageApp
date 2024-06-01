@@ -34,14 +34,13 @@ const AdminLoginSchema = new mongoose.Schema({
     }
 });
 
-const FileUploadSchema = new mongoose.Schema({
 
-    fileName: { type: String, required: true },
-    filePath: { type: String, required: true },
-    fileType: { type: String, required: true }
-});
 
 const ImageSchema = new mongoose.Schema({
+    subject :{
+        type:String,
+        required:true
+    },
     name :{
         type:String,
         required:true

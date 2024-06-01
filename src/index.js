@@ -6,6 +6,9 @@ const fs = require('fs');
 const methodOverride = require('method-override');
 const { UserCollection, AdminCollection, FileCollection } = require("./config");
 const { name } = require('ejs');
+var bodyParser = require('body-parser');
+const sessions = require('express-session');
+
 
 const app = express();
 const port = 8080;
@@ -16,6 +19,10 @@ app.use(express.static("./public"));
 app.use(express.static("./views"));
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
+app.use(bodyParser());
+app.use(sessions({
+    secret:'ff'
+}));
 
 app.listen(port, () => {
     console.log('Server running on port', port);
@@ -86,11 +93,14 @@ app.get("/user_material", (req, res) => {
 //Admin get
 
 app.get("/admin_material", (req, res) => {
-    const subject = "TEST";
+   
+    const subjects = req.session.selectedSubject;
+
     
-    FileCollection.find({})
+    
+    FileCollection.find({subject: req.session.selectedSubject})
     .then((x) =>{
-        res.render("admin_material",{subject, x});
+        res.render("admin_material",{subject:subjects, x});
     })
     .catch((y)=>{
         console.log(y)
@@ -222,12 +232,12 @@ app.post("/admin", async (req, res) => {
 //User post
 
 app.post("/user_material", (req, res) => {
-    // Retrieve the selected subject value from the request body
-    const selectedSubject = req.body.selectedSubject.toString().replace(',', '');
+   
+   const selectedSubject = req.body.selectedSubject.toString().replace(',', '');
+    req.session.selectedSubject=selectedSubject;
     
-    // Render the admin_material view and pass the selected subject value
     
-    FileCollection.find({})
+    FileCollection.find({subject: req.session.selectedSubject})
     .then((x) =>{
         res.render("user_material",{subject:selectedSubject, x});
     })
@@ -245,12 +255,21 @@ app.post("/user_material", (req, res) => {
 
 app.post("/admin_material", (req, res) => {
     // Retrieve the selected subject value from the request body
-   
-    res.redirect("admin_material");
+    const selectedSubject = req.body.selectedSubject.toString().replace(',', '');
+    req.session.selectedSubject = selectedSubject;
+    FileCollection.find({subject: req.session.selectedSubject})
+    .then((x) =>{
+        res.render("admin_material",{subject:selectedSubject, x});
+    })
+    .catch((y)=>{
+        console.log(y)
+    })
 
 });
 
 app.post("/upload",upload.single('file'),(req, res) => {
+    const selectedSubject = req.session.selectedSubject;
+    console.log(selectedSubject);
     req.file
     FileCollection.findOne({name:req.file.filename})
     .then((a)=>{
@@ -259,6 +278,7 @@ app.post("/upload",upload.single('file'),(req, res) => {
     }
     else{
         const newfile = new FileCollection({
+            subject : selectedSubject,
             name : req.file.filename
        })
        newfile.save();
