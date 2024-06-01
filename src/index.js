@@ -17,6 +17,7 @@ app.use(express.json());
 app.set('view engine', 'ejs');
 app.use(express.static("./public"));
 app.use(express.static("./views"));
+app.use("/open",express.static('uploads'));
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
 app.use(bodyParser());
@@ -267,9 +268,11 @@ app.post("/admin_material", (req, res) => {
 
 });
 
+
+//File Handling part
+
 app.post("/upload",upload.single('file'),(req, res) => {
     const selectedSubject = req.session.selectedSubject;
-    console.log(selectedSubject);
     req.file
     FileCollection.findOne({name:req.file.filename})
     .then((a)=>{
@@ -287,7 +290,6 @@ app.post("/upload",upload.single('file'),(req, res) => {
     }
     })
 });
-
 
 app.delete("/delete/:id", async (req, res) => {
     try {
@@ -307,11 +309,17 @@ app.delete("/delete/:id", async (req, res) => {
     }
 });
 
-app.post("/open_file/:id", async(req,res) => {
-    const fileName = req.params.id;
+app.get('/open/:fileName', (req, res) => {
+    const fileName = req.params.fileName;
     const filepath = 'uploads/' + fileName;
-    fs.open(filepath);
-})
+
+    // Check if the file exists
+    if (fs.existsSync(filepath)) {
+        res.sendFile(filepath);
+    } else {
+        res.status(404).send("File not found");
+    }
+});
    
    
    

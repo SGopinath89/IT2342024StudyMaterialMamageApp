@@ -27,16 +27,15 @@
 				    <%=y.name%>
 				</td>
                 <td class='filetabletd'>
-                    <form action="/open_file/<%=y.name%>" method="post">
-                        <button type="submit" name="submit">Open</button>
-                    </form>
+                    <a href="/open/<%=y.name%>" target="_blank">open</a>
                 </td>
                 <td class='filetabletd'>
-                <a class='meterial_text' href='' download> Download File </a>
+                <a class='meterial_text' href="/open/<%=y.name%>" download> Download File </a>
+                
                 </td>
-                <td class='filetabletd'>
+                <td class='filetabletd_delete'>
                     <form action="/delete/<%=y.name%>?_method=DELETE" method="post">
-                        <button type="submit" name="submit">delete</button>
+                        <button class="btn-delete" type="submit" name="submit">Delete</button>
                     </form>
                 </td>
                 </tr>

@@ -21,6 +21,12 @@ body{
       background-color: rgba(0, 0, 0, 0.4);
     }
 
+    .filetabletd_delete{
+     
+      height: 30px;
+      padding:0px ;
+    }
+
     .container {
       width: 500px; 
       background-color: rgba(255, 255, 255, 0.5);
@@ -128,3 +134,20 @@ body{
     .meterial_text{
       color:blue;
     }
+
+
+    .btn-delete {
+      background-color: #fe1e05; 
+      color: white; 
+      border: none; 
+      padding: 10px 20px; 
+      font-size: 16px; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      transition: background-color 0.3s ease, transform 0.2s ease; 
+  }
+  
+  .btn-delete:hover {
+      background-color: #cd1703; 
+      transform: scale(1.05); 
+  }
