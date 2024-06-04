@@ -6,7 +6,6 @@ const fs = require('fs');
 const methodOverride = require('method-override');
 const { UserCollection, AdminCollection, FileCollection } = require("./config");
 const { name } = require('ejs');
-var bodyParser = require('body-parser');
 const sessions = require('express-session');
 
 
@@ -20,7 +19,6 @@ app.use(express.static("./views"));
 app.use("/open",express.static('uploads'));
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
-app.use(bodyParser());
 app.use(sessions({
     secret:'ff'
 }));
@@ -67,6 +65,15 @@ app.get("/signup", (req, res) => {
 
 app.get("/admin", (req, res) => {
     res.render("admin", { error: "" });
+});
+
+app.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).send("Error logging out");
+        }
+        res.redirect("/home");
+    });
 });
 
 
@@ -169,8 +176,8 @@ app.post("/signup", async (req, res) => {
         // Create new user with hashed password
         const newUser = new UserCollection({ name: username, password: hashedPassword });
         await newUser.save();
-
-        res.status(201).send("User registered successfully");
+        res.status(500).render("signup", { error: "User registered successfully" });
+       
     } catch (error) {
         res.status(500).render("signup", { error: "Error occurred during signup" });
     }
@@ -202,8 +209,8 @@ app.post("/passwordChange", async (req, res) => {
         // Update the user's password in the database
         user.password = hashedPassword;
         await user.save();
-
-        res.status(200).send("Password changed successfully");
+        res.status(500).render("passwordChange", { error: "Password changed successfully" });
+        
     } catch (error) {
         res.status(500).render("passwordChange", { error: "Error occurred during password change" });
     }
