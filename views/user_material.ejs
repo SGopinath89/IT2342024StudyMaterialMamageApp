@@ -10,7 +10,7 @@
 <body>
 
     <div class="container">
-	<div class="logout"> <a class="logout_text" href="/user_dashboard" >Back</a></div>
+	<div class="logout"> <a class="logout_text" href="/user/user_dashboard" >Back</a></div>
 	<br><br>
       
     <h1><%= subject %></h1><br>
@@ -24,10 +24,10 @@
                      <%=y.name%>
                  </td>
                  <td class='filetabletd'>
-                 <a class='meterial_text' href="/open/<%=y.name%>" target=_blank> Open File </a>
+                 <a class='meterial_text' href="/user/open/<%=y.name%>" target=_blank> Open File </a>
                  </td>
                  <td class='filetabletd'>
-                 <a class='meterial_text' href="/open/<%=y.name%>" download> Download File </a>
+                 <a class='meterial_text' href="/user/open/<%=y.name%>" download> Download File </a>
                  </td>
                  </tr>
              <%})%>

@@ -21,6 +21,8 @@ const LoginSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+   
+
 });
 
 const AdminLoginSchema = new mongoose.Schema({
@@ -32,11 +34,12 @@ const AdminLoginSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+    
 });
 
 
 
-const ImageSchema = new mongoose.Schema({
+const FileSchema = new mongoose.Schema({
     subject :{
         type:String,
         required:true
@@ -51,7 +54,7 @@ const ImageSchema = new mongoose.Schema({
 
 const UserCollection = mongoose.model("users", LoginSchema);
 const AdminCollection = mongoose.model("admins", AdminLoginSchema);
-const FileCollection = mongoose.model("files", ImageSchema);
+const FileCollection = mongoose.model("files", FileSchema);
 
 module.exports = {
     UserCollection,

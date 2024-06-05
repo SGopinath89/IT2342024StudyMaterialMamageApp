@@ -7,12 +7,12 @@
 <body>
 
 <div class="container">
-<div class="logout"> <a class="logout_text" href="/home" >Back</a></div>    
+<div class="logout"> <a class="logout_text" href="/" >Back</a></div>    
   <h1>REGISTER</h1>
   <% if (error) { %>
     <p class="error"><%= error %></p>
   <% } %>
-  <form class="form" action="/signup" method="post">
+  <form class="form" action="/user/signup" method="post">
    
     <div class="form-group">
       <h4>Username:</h4>
@@ -30,7 +30,7 @@
 
     <input type="submit" class="button" name="register" value="Register">
     <br><br>
-	<a href="/login">Already have account?Login</a>
+	<a href="/user/login">Already have account?Login</a>
   </form>
 </div>
 

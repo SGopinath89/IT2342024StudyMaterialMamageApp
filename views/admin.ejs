@@ -13,7 +13,7 @@
   <% if (error) { %>
     <p class="error"><%= error %></p>
   <% } %>
-  <form class="form" action="/admin" method="post">
+  <form class="form" action="/admin/login" method="post">
    
     <div class="form-group">
       <h4>USERNAME:</h4>
@@ -32,8 +32,8 @@
   </form>
 
 <br><br>
-<a href="/login" >User ? LOGIN</a>
-<div class="logout"> <a class="logout_text" href="/home" >Back</a></div>
+<a href="/user/login" >User ? LOGIN</a>
+<div class="logout"> <a class="logout_text" href="/" >Back</a></div>
 </div>
 
 </body>

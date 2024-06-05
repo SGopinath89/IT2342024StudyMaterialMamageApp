@@ -9,6 +9,19 @@ body{
       height: 100vh;
 	    background: url('./resources/admin.jpg') center/cover no-repeat;
     }
+    h4 {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.4); /* Semi-transparent black */
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin: 0 0 20px 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    
     .filetable{
       margin-top: 20px;
       width: 100%;
