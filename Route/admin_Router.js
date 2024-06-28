@@ -7,6 +7,9 @@ const multer = require('multer');
 const fs = require('fs');
 const sessions = require('express-session');
 const methodOverride = require('method-override');
+const jwt = require('jsonwebtoken');
+const secretKey='phyvauac.lk@2024';
+
 
 
 router.use(express.urlencoded({ extended: false }));
@@ -45,9 +48,9 @@ router.post("/login", async (req, res) => {
 
         const isPasswordMatch = await bcrypt.compare(req.body.password, admin.password);
         if (isPasswordMatch) {
-           req.session.username=admin.name;
-           req.session.role = 'admin';
-            res.redirect("admin_dashboard");
+           const token=jwt.sign({username:admin.username},secretKey);
+           req.session.token=token;
+            return res.redirect("admin_dashboard");
         } else {
             res.status(400).render("admin", { error: "Wrong password" });
         }

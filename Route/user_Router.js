@@ -3,6 +3,10 @@ const router = express.Router();
 const {isAuthenticated,isAdmin} = require('../Middleware/Authontication'); 
 const { UserCollection, AdminCollection, FileCollection } = require("../src/config");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+const secretKey='phyvauac.lk@2024';
+
+
 
 const sessions = require('express-session');
 
@@ -30,7 +34,7 @@ router.get("/passwordChange", (req, res) => {
    res.render("passwordChange", { error: "" });
 });
 
-router.get("/user_dashboard", isAuthenticated,  (req, res) => {
+router.get("/user_dashboard",isAuthenticated,(req, res) => {
    res.render("user_dashboard");
 });
 
@@ -97,8 +101,10 @@ router.post("/login", async (req, res) => {
 
        const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
        if (isPasswordMatch) {
-           req.session.username = user.name;
-           res.redirect("user_dashboard");
+           const token=jwt.sign({username:user.username},secretKey);
+           req.session.token=token;
+          res.redirect("user_dashboard");
+
        } else {
            res.status(400).render("login", { error: "Wrong password" });
        }
